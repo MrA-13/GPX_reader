@@ -3,13 +3,17 @@ import math
 from datetime import datetime
 
 class Gpx():
-    def __init__(self, gpx_file):
+    def __init__(self, gpx_file, count_periods, periods_info, type_of_tran):
         self.parsed_file = et.parse(gpx_file)
         root = self.parsed_file.getroot()
         # Information
         self.date = root[0][-1].text
         # Data
         self.trk_list = list(root[1][1])
+        self.count_periods = count_periods
+        self.periods_info = periods_info
+        self.type_of_tran = type_of_tran
+
 
     def __calculate_distance(self, start_lat_lon, end_lat_lon):
         R = 6371 # Radius of Earth in km
@@ -46,17 +50,19 @@ class Gpx():
         return sum(hr_list)/len(hr_list)
 
     def get_info(self):
-        loc_list,time_list, hr_list = [],[],[]
-        for item in self.trk_list:
-            loc_list.append(item.attrib)
-            if len(item) == 2:
-                time_list.append(item[0].text)
-                hr_list.append(int(item[1][0].text))
-            else:
-                time_list.append(item[1].text)
-                hr_list.append(int(item[2][0].text))
-        dis = self.__get_distance(loc_list)
-        time = self.__get_time(time_list)
-        hr = self.__get_HR(hr_list) 
-        print(f"Distance - {dis}\nTime - {time}\nHR - {hr}")
+        periods_final  = {}
+        for period in range(1, self.count_periods+1):
+            periods_final[period] = {
+                'loc_list':[],
+                'time_list':[], 
+                'hr_list':[], 
+                'distance': 0, 
+                'time' : '',
+                'hr': '',
+                'hrZone': 0
+            }
+            
+            for item in self.trk_list:
+                pass
+                
         
